@@ -35,30 +35,32 @@ export function Board({ interactive }: BoardProps) {
   }
 
   return (
-    <div
-      role="grid"
-      aria-label={`Tic-tac-toe board, ${boardSize} by ${boardSize}`}
-      className={`mx-auto grid aspect-square w-full max-w-[min(94vw,32rem)] touch-manipulation ${scale.gap}`}
-      style={{ gridTemplateColumns: `repeat(${boardSize}, minmax(0, 1fr))` }}
-    >
-      {state.board.map((value, index) => {
-        const [row, col] = indexToRowCol(index, boardSize)
-        return (
-          <Cell
-            key={index}
-            value={value}
-            isWinning={winningSet.has(index)}
-            disabled={!interactive || state.status !== "playing" || value !== null}
-            markTextClass={scale.markText}
-            label={
-              value
-                ? `Row ${row + 1}, column ${col + 1}: ${value}`
-                : `Row ${row + 1}, column ${col + 1}: empty`
-            }
-            onSelect={() => handleSelect(index)}
-          />
-        )
-      })}
+    <div className="glass-panel mx-auto w-full max-w-[min(94vw,32rem)] rounded-3xl p-3 shadow-[0_20px_60px_-25px_rgb(0_0_0/70%)] sm:p-4">
+      <div
+        role="grid"
+        aria-label={`Tic-tac-toe board, ${boardSize} by ${boardSize}`}
+        className={`grid aspect-square w-full touch-manipulation ${scale.gap}`}
+        style={{ gridTemplateColumns: `repeat(${boardSize}, minmax(0, 1fr))` }}
+      >
+        {state.board.map((value, index) => {
+          const [row, col] = indexToRowCol(index, boardSize)
+          return (
+            <Cell
+              key={index}
+              value={value}
+              isWinning={winningSet.has(index)}
+              disabled={!interactive || state.status !== "playing" || value !== null}
+              markTextClass={scale.markText}
+              label={
+                value
+                  ? `Row ${row + 1}, column ${col + 1}: ${value}`
+                  : `Row ${row + 1}, column ${col + 1}: empty`
+              }
+              onSelect={() => handleSelect(index)}
+            />
+          )
+        })}
+      </div>
     </div>
   )
 }

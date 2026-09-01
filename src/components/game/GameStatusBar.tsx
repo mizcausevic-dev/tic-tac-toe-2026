@@ -1,66 +1,86 @@
+import { motion } from "framer-motion"
+import { Trophy, Handshake } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useGame } from "@/features/game/context"
-import { cn } from "@/lib/utils"
 
-export function GameStatusBar({ aiThinking = false }: { aiThinking?: boolean }) {
+export function GameStatusBar() {
   const { state, dispatch } = useGame()
-  const { config } = state
+  const { config, status, winner, moveCount } = state
 
-  const boardLabel = `${config.boardSize}×${config.boardSize} · ${config.winLength} in a row`
-
-  if (state.status === "won" && state.winner) {
-    const isHumanWin = state.winner.mark === "X"
+  if (status === "won" && winner) {
+    const isHumanWin = winner.mark === "X"
     return (
-      <div className="flex flex-col items-center gap-3 rounded-xl border border-primary/40 bg-primary/10 px-4 py-3 text-center sm:flex-row sm:justify-between sm:text-left">
-        <p className="text-lg font-semibold">
-          <span className={state.winner.mark === "X" ? "text-mark-x" : "text-mark-o"}>
-            {state.winner.mark}
-          </span>{" "}
-          wins in {state.moveCount} move{state.moveCount === 1 ? "" : "s"}
-          {config.opponent === "ai" && (
-            <span className="ml-1 text-sm font-normal text-muted-foreground">
-              {isHumanWin ? "— nice reads." : "— the bot got there first."}
-            </span>
-          )}
-        </p>
+      <motion.div
+        initial={{ opacity: 0, y: -8, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
+        className="glass-panel-strong flex flex-col items-center gap-3 rounded-2xl px-5 py-4 text-center shadow-[0_0_30px_-10px_var(--glow-color)] sm:flex-row sm:justify-between sm:text-left"
+        style={{
+          ["--glow-color" as string]: winner.mark === "X" ? "var(--mark-x)" : "var(--mark-o)",
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <Trophy
+            className="size-7 shrink-0"
+            style={{ color: winner.mark === "X" ? "var(--mark-x)" : "var(--mark-o)" }}
+          />
+          <p className="text-lg font-semibold">
+            <span className={winner.mark === "X" ? "text-mark-x" : "text-mark-o"}>
+              {winner.mark}
+            </span>{" "}
+            wins in {moveCount} move{moveCount === 1 ? "" : "s"}
+            {config.opponent === "ai" && (
+              <span className="ml-1 block text-sm font-normal text-muted-foreground sm:inline">
+                {isHumanWin ? "— nice reads." : "— the bot got there first."}
+              </span>
+            )}
+          </p>
+        </div>
         <div className="flex gap-2">
-          <Button size="sm" onClick={() => dispatch({ type: "RESET_MATCH" })}>
+          <Button size="sm" className="tactile" onClick={() => dispatch({ type: "RESET_MATCH" })}>
             Rematch
           </Button>
-          <Button size="sm" variant="outline" onClick={() => dispatch({ type: "NEW_SETUP" })}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="tactile"
+            onClick={() => dispatch({ type: "NEW_SETUP" })}
+          >
             New setup
           </Button>
         </div>
-      </div>
+      </motion.div>
     )
   }
 
-  if (state.status === "draw") {
+  if (status === "draw") {
     return (
-      <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-center sm:flex-row sm:justify-between sm:text-left">
-        <p className="text-lg font-semibold">Draw — the board filled up.</p>
+      <motion.div
+        initial={{ opacity: 0, y: -8, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
+        className="glass-panel-strong flex flex-col items-center gap-3 rounded-2xl px-5 py-4 text-center sm:flex-row sm:justify-between sm:text-left"
+      >
+        <div className="flex items-center gap-3">
+          <Handshake className="size-7 shrink-0 text-secondary" />
+          <p className="text-lg font-semibold">Draw — the board filled up.</p>
+        </div>
         <div className="flex gap-2">
-          <Button size="sm" onClick={() => dispatch({ type: "RESET_MATCH" })}>
+          <Button size="sm" className="tactile" onClick={() => dispatch({ type: "RESET_MATCH" })}>
             Rematch
           </Button>
-          <Button size="sm" variant="outline" onClick={() => dispatch({ type: "NEW_SETUP" })}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="tactile"
+            onClick={() => dispatch({ type: "NEW_SETUP" })}
+          >
             New setup
           </Button>
         </div>
-      </div>
+      </motion.div>
     )
   }
 
-  return (
-    <div className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
-      <p className="font-medium">
-        <span className={cn(state.currentPlayer === "X" ? "text-mark-x" : "text-mark-o")}>
-          {state.currentPlayer}
-        </span>
-        {"'s turn"}
-        {aiThinking && <span className="ml-2 text-sm text-muted-foreground">thinking…</span>}
-      </p>
-      <p className="text-sm text-muted-foreground">{boardLabel}</p>
-    </div>
-  )
+  return null
 }

@@ -22,7 +22,7 @@ interface ProfileEditDialogProps {
 export function ProfileEditDialog({ open, onOpenChange }: ProfileEditDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="glass-panel-strong border-white/10">
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
           <DialogDescription>
@@ -72,10 +72,10 @@ function ProfileEditForm({ onDone }: { onDone: () => void }) {
                 aria-pressed={avatar === choice}
                 aria-label={`Avatar ${choice}`}
                 className={cn(
-                  "flex size-10 items-center justify-center rounded-full border text-xl transition-colors",
+                  "tactile flex size-10 items-center justify-center rounded-full text-xl transition-all",
                   avatar === choice
-                    ? "border-primary bg-primary/15"
-                    : "border-border bg-card hover:bg-accent"
+                    ? "scale-110 bg-card shadow-[0_0_0_2px_var(--violet),0_0_14px_-2px_var(--violet-glow)]"
+                    : "border border-border bg-card hover:bg-accent"
                 )}
               >
                 {choice}
@@ -86,10 +86,14 @@ function ProfileEditForm({ onDone }: { onDone: () => void }) {
       </div>
 
       <DialogFooter>
-        <Button variant="outline" onClick={onDone}>
+        <Button variant="outline" className="tactile" onClick={onDone}>
           Cancel
         </Button>
-        <Button onClick={handleSave} disabled={!name.trim()}>
+        <Button
+          className="cta-gradient tactile border-0 font-semibold"
+          onClick={handleSave}
+          disabled={!name.trim()}
+        >
           Save
         </Button>
       </DialogFooter>

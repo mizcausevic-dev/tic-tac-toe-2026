@@ -13,26 +13,36 @@ export function ProfileHeader({ onEdit }: ProfileHeaderProps) {
   const { level, xpIntoLevel, xpForNextLevel, progress } = levelProgressFromXp(totalXp)
 
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
-      <div
-        className="flex size-14 shrink-0 items-center justify-center rounded-full bg-accent text-3xl"
-        aria-hidden="true"
-      >
-        {profile.avatar}
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center justify-between gap-2">
-          <p className="truncate font-semibold">{profile.name}</p>
-          <span className="shrink-0 rounded-full bg-primary/15 px-2 py-0.5 text-xs font-semibold text-primary">
-            Lv {level}
-          </span>
+    <div className="glass-panel-strong flex items-center gap-4 rounded-2xl p-4 shadow-[0_16px_40px_-20px_var(--violet-glow)]">
+      <div className="relative shrink-0">
+        <div
+          className="animate-float flex size-16 items-center justify-center rounded-full text-3xl"
+          style={{
+            background:
+              "radial-gradient(circle at 35% 30%, color-mix(in oklab, var(--violet) 25%, var(--card)), var(--card))",
+            boxShadow: "0 0 0 2px var(--violet), 0 0 20px -2px var(--violet-glow)",
+          }}
+          aria-hidden="true"
+        >
+          {profile.avatar}
         </div>
-        <Progress value={progress * 100} className="mt-2 h-2" />
-        <p className="mt-1 text-xs text-muted-foreground">
+        <span className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full bg-mark-x font-mono text-[0.65rem] font-bold text-background shadow-[0_0_10px_var(--mark-x-glow)]">
+          {level}
+        </span>
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <p className="truncate font-semibold">{profile.name}</p>
+        <Progress
+          value={progress * 100}
+          className="shimmer-sweep mt-2 h-2 [&>[data-slot=progress-indicator]]:bg-violet"
+        />
+        <p className="mt-1 font-mono text-xs text-muted-foreground">
           {xpIntoLevel} / {xpForNextLevel} XP to level {level + 1}
         </p>
       </div>
-      <Button size="sm" variant="outline" onClick={onEdit}>
+
+      <Button size="sm" variant="outline" className="tactile shrink-0" onClick={onEdit}>
         Edit
       </Button>
     </div>

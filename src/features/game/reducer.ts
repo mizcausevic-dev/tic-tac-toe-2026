@@ -21,6 +21,7 @@ export function createInitialState(config: GameConfig = DEFAULT_CONFIG): GameSta
     status: "setup",
     winner: null,
     moveCount: 0,
+    sessionScore: { X: 0, O: 0 },
   }
 }
 
@@ -47,6 +48,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         status: "playing",
         winner: null,
         moveCount: 0,
+        sessionScore: { X: 0, O: 0 },
       }
     }
 
@@ -60,7 +62,17 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
       const winner = checkWinAt(board, state.config.boardSize, state.config.winLength, action.index)
       if (winner) {
-        return { ...state, board, moveCount, status: "won", winner }
+        return {
+          ...state,
+          board,
+          moveCount,
+          status: "won",
+          winner,
+          sessionScore: {
+            ...state.sessionScore,
+            [winner.mark]: state.sessionScore[winner.mark] + 1,
+          },
+        }
       }
       if (isBoardFull(board)) {
         return { ...state, board, moveCount, status: "draw" }

@@ -19,6 +19,11 @@ export interface WinResult {
 
 export type GameStatus = "setup" | "playing" | "won" | "draw"
 
+export interface SessionScore {
+  X: number
+  O: number
+}
+
 export interface GameState {
   config: GameConfig
   board: CellValue[]
@@ -26,6 +31,8 @@ export interface GameState {
   status: GameStatus
   winner: WinResult | null
   moveCount: number
+  /** Wins per mark across rematches in this setup — reset by NEW_SETUP, kept across RESET_MATCH. */
+  sessionScore: SessionScore
 }
 
 export const HUMAN_MARK: Mark = "X"
