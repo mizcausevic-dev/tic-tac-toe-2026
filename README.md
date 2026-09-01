@@ -1,32 +1,49 @@
-# React + TypeScript + Vite
+# Tic-Tac-Toe 2026
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A tic-tac-toe game that generalizes past 3x3: any board size from 3x3 to
+10x10, any win length from 3 to 5 in a row, local pass-and-play, and three
+AI difficulty tiers up to a bounded minimax "hard" bot. Profiles, match
+history, stats, and XP/levels persist in `localStorage`.
 
-Currently, two official plugins are available:
+**Live:** https://mizcausevic-dev.github.io/tic-tac-toe-2026/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+- React 19 + TypeScript + Vite
+- Tailwind CSS v4 + shadcn/ui (Radix primitives)
+- `useReducer` + Context for state — one slice for live game state, one
+  independent slice for the persisted player profile
+- Self-hosted variable fonts (Space Grotesk, JetBrains Mono), no external
+  font requests
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## How it works
 
-## Expanding the Oxlint configuration
+- **Win detection** (`src/features/game/winDetection.ts`) scans outward from
+  the just-placed cell in all 8 directions rather than checking a hardcoded
+  line table, so the same function is correct for any board size and win
+  length with no special-casing.
+- **AI** (`src/features/game/ai.ts`) has three tiers: random, a
+  win/block/center/corner heuristic, and a "hard" bot that runs minimax with
+  alpha-beta pruning over a radius-bounded candidate set so search stays fast
+  on boards larger than 3x3.
+- **Persistence** (`src/features/profile/storage.ts`) is a single versioned
+  `localStorage` key (`ttt2026:v1:profile`) with a safe fallback on
+  corrupt/missing data, so future schema changes can add a migration branch
+  without breaking existing saves.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Development
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev      # start the dev server
+npm run build    # type-check + production build
+npm run lint      # eslint
+npm run format    # prettier --write
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Deployment
+
+Pushes to `main` build and deploy automatically via GitHub Actions
+(`.github/workflows/deploy.yml`) using `actions/deploy-pages` — no `gh-pages`
+branch involved. `vite.config.ts`'s `base` is set to `/tic-tac-toe-2026/` to
+match this repo's Pages project path.
